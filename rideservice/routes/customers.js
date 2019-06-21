@@ -63,8 +63,8 @@ router.post('/signup', function(req, res, next) {
 })
 });
 
-//Increasing ride service by 1
-router.put('update/ride_service/usernum/:number', function(req, res, next) {
+/*Increasing ride service by 1
+router.put('/update/ride_service/usernum/:number', function(req, res, next) {
   var number = req.params.number;
   db.query("UPDATE userinfo SET ride_service=(ride_service+1) WHERE number=?",[number],function(err, result) {
     if(err) {
@@ -72,7 +72,29 @@ router.put('update/ride_service/usernum/:number', function(req, res, next) {
     }
     res.json({'status': 'success'})
   })
-});
+});*/
  
+ //deleting the existing user
+router.get('/delete/:number/:password', function(req, res, next) {
+  var number = req.params.number;
+  var password = req.params.password;
+  db.query("SELECT number,password FROM userinfo WHERE number=? AND  password=?",[number,password],function(err,rows,fields){
+    if(rows.length!=0){
+       db.query("DELETE FROM userinfo WHERE number=? AND password=?",[number,password], function(err, result) {
+    if(err) {
+      res.status(500).send({ error: 'Something failed!' })
+    }
+    res.json({'status': 'Account Deleted Successfully'});
+  })
+    }
+    else
+    {
+      res.json({"res":"User Not Found"})
+    }
+
+  })
+
+})
+
 
 module.exports = router;
